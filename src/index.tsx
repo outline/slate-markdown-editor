@@ -25,6 +25,7 @@ import Extension from "./lib/Extension";
 import ExtensionManager from "./lib/ExtensionManager";
 import ComponentView from "./lib/ComponentView";
 import headingToSlug from "./lib/headingToSlug";
+import { mathSerializer } from "@benrbray/prosemirror-math";
 
 // nodes
 import ReactNode from "./nodes/ReactNode";
@@ -42,6 +43,8 @@ import Heading from "./nodes/Heading";
 import HorizontalRule from "./nodes/HorizontalRule";
 import Image from "./nodes/Image";
 import ListItem from "./nodes/ListItem";
+import Math from "./nodes/Math";
+import MathDisplay from "./nodes/MathDisplay";
 import Notice from "./nodes/Notice";
 import OrderedList from "./nodes/OrderedList";
 import Paragraph from "./nodes/Paragraph";
@@ -305,6 +308,8 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
         new Code(),
         new Highlight(),
         new Italic(),
+        new Math(),
+        new MathDisplay(),
         new TemplatePlaceholder(),
         new Underline(),
         new Link({
@@ -454,6 +459,7 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
       editable: () => !this.props.readOnly,
       nodeViews: this.nodeViews,
       handleDOMEvents: this.props.handleDOMEvents,
+      clipboardTextSerializer: slice => mathSerializer.serializeSlice(slice),
       dispatchTransaction: transaction => {
         const { state, transactions } = this.view.state.applyTransaction(
           transaction
